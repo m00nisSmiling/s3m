@@ -15,16 +15,16 @@ Then install other requirements using pip :
 > $ pip install requests termcolor --break-system-packages
 
 ## Installation Steps
-> $ git clone https://github.com/m00nisSmiling/s3m.git
-> $ cd s3m
-> $ chmod +x ./s3m.py
-> $ ./s3m.py -get bucket               # get the list of buckets
-> $ ./s3m.py -get log                  # log every files from s3 buckets
-> $ ./s3m.py -get path                 # get every file paths from s3 buckets
-> $ ./s3m.py -scan                     # scan s3 buckets using names and extensions from ./extensions.txt to look for malicious files
-> $ ./s3m.py -aggressive               # scan the file contents from s3 buckets using the checklist file ./checklist.txt
-> $ ./s3m.py -url [url]                # check the file contents and modified date of provided url
-> $ ./s3m.py -del s3://[bucket]/path   # delete the provided file from bucket
-> $ ./s3m.py -check [bucket_name]      # check logs for provided bucket
+#### $ git clone https://github.com/m00nisSmiling/s3m.git
+#### $ cd s3m
+#### $ chmod +x ./s3m.py
+#### $ ./s3m.py -get bucket               # get the list of buckets
+#### $ ./s3m.py -get log                  # log every files from s3 buckets
+#### $ ./s3m.py -get path                 # get every file paths from s3 buckets
+#### $ ./s3m.py -scan                     # scan s3 buckets using names and extensions from ./extensions.txt to look for malicious files
+#### $ ./s3m.py -aggressive               # scan the file contents from s3 buckets using the checklist file ./checklist.txt
+#### $ ./s3m.py -url [url]                # check the file contents and modified date of provided url
+#### $ ./s3m.py -del s3://[bucket]/path   # delete the provided file from bucket
+#### $ ./s3m.py -check [bucket_name]      # check logs for provided bucket
 
 ## Screenshots
