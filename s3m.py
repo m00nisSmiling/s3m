@@ -6,7 +6,6 @@ import sys
 import requests
 
 def options():
-    print(colored("\n [!] Before other operations, you need run this command to get bucket list -> ./s3m.py -get bucket","blue"))
     print(colored("""
  -get bucket           =     Get bucket list from aws account
  -get log              =     Get log from all infra of s3
@@ -23,8 +22,9 @@ def help():
     options() 
 
 def delete(b):
-    if b[0:4]=="s3://":
-        os.system(f"aws s3 rm {b}")
+    abc = b.strip()
+    if abc.startswith("s3://"):
+        os.system(f"aws s3 rm \"{abc}\"")
     else:
         help()
         
@@ -62,12 +62,15 @@ def get_s3_bucket_list():
     print(colored("[<-] ","magenta"),"GOT IT ! ....")
     
 def date_out():
-    file_i = open("./buckets.txt").read()
-    file_s = file_i.splitlines()
-
-    for i in file_s:
-        os.system(f"aws s3 ls s3://{i}/ --recursive > ./output/1.with_date/{i} ")
-        print(colored("[<-]","magenta"),colored(f"./output/1.with_date/{i}","blue"))
+    patho = "./buckets.txt"
+    if not os.pth.isfile(patho):
+        print(colored(f"[!] Run this to retrieve s3 bucket lists from server -> $ ./s3m.py -get bucket","red"))
+    else:
+        file_i = open(patho).read()
+        file_s = file_i.splitlines()
+        for i in file_s:
+            os.system(f"aws s3 ls s3://{i}/ --recursive > ./output/1.with_date/{i} ")
+            print(colored("[<-]","magenta"),colored(f"./output/1.with_date/{i}","blue"))
 
 def validation():
     os.system("rm -r ./output/log")
@@ -146,6 +149,9 @@ def contype(x):
     except requests.exceptions.MissingSchema:
         help()
         pass
+    except requests.exceptions.InvalidSchema:
+        help()
+        pass
     else:
         print(colored("-------------------\n","white"),colored("Content-Type       > ","blue"),colored(getfile.headers.get('Content-Type'),"green"))
         print(colored(" Last-Modified-Date > ","magenta"),colored(getfile.headers.get('Last-Modified'),"green"))
@@ -168,33 +174,44 @@ try:
     option = sys.argv[1]
 except IndexError:
     help()
-else:
+    sys.exit()
+
+if option in ["-get", "-check", "-url", "-del"]:
     try:
         argument = sys.argv[2]
-        if option == "-get":
-            if argument == "log":
-                date_out()
-            elif argument == "path":
-                nodate_out()
-            elif argument == "bucket":
-                get_s3_bucket_list()
-            else:
-                help()
-        elif option == "-check":
-            buckets_log(argument)
-        elif option == "-url":
-            contype(argument)
-        elif option == "-del":
-            delete(argument)
-        else:
-            help() 
     except IndexError:
-        if option == "-scan":
-            validation()
-        elif option == "-aggressive":
-            aggre()
+        print(f"[!] {option} requires an argument!")
+        help()
+        sys.exit()
+
+    if option == "-get":
+        if argument == "log":
+            date_out()
+        elif argument == "path":
+            nodate_out()
+        elif argument == "bucket":
+            get_s3_bucket_list()
         else:
             help()
+
+    elif option == "-check":
+        buckets_log(argument)
+
+    elif option == "-url":
+        contype(argument)
+
+    elif option == "-del":
+        delete(argument)
+
+elif option == "-scan":
+    validation()
+
+elif option == "-aggressive":
+    aggre()
+
+else:
+    help()
+
 #def mainloop():
 #    print(colored("--------------------","white"))
 #    inp1 = input(colored("</> ","red"))
