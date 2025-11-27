@@ -28,3 +28,4 @@ Then install other requirements using pip :
 #### $ ./s3m.py -check [bucket_name]      # check logs for provided bucket
 
 ## Screenshots
+<img width="2560" height="1440" alt="New Project 8  2173FE0" src="https://github.com/user-attachments/assets/bc3307a4-b471-4c98-961c-6f8ff8e49695" />
