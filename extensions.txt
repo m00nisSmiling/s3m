@@ -1,0 +1,15 @@
+.html
+.svg
+.php
+.php4
+.php
+.hta
+.jar
+.xml
+.ini
+.jar
+.ico
+.jsp
+.py
+.csv
+

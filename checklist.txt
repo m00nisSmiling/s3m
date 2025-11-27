@@ -1,0 +1,30 @@
+alert(1)
+alert('xss')
+prompt(1)
+prompt('xss')
+<h1>hacked</h1>
+.innerHTML
+shell
+backdoor
+console.log
+revshell
+include(
+tcpreverse
+<img src=x
+<svg onload=
+<button onclick=
+<a href="javascript:
+<body onload=
+<marquee onstart=
+<marquee
+onmouseover=
+onclick=
+onerror=
+phpinfo()
+system(
+$_GET
+$_POST
+/etc/passwd
+/etc/shadow
+/etc/hostname
+sleep(
