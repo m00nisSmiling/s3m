@@ -27,6 +27,9 @@ Then install other requirements using pip :
  $ ./s3m.py -url [url]                # check the file contents and modified date of provided url
  $ ./s3m.py -del s3://[bucket]/path   # delete the provided file from bucket
  $ ./s3m.py -check [bucket_name]      # check logs for provided bucket
+ $ ./s3m.py --scan-open-bucket        # scan all of s3 opened buckets from list
+        (or)
+ $ ./s3m.py -sob     
 ```
 
 ## Screenshots
