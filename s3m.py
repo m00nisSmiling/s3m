@@ -37,7 +37,7 @@ def help():
     options() 
 
 def delete(b):
-    if b[0:4]=="s3://":
+    if b.startswith("s3://"):
         os.system(f"aws s3 rm {b}")
     else:
         help()
