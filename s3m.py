@@ -6,25 +6,39 @@ import sys
 import requests
 
 def options():
+    print(colored("\n [!] Before other operations, you need run this command to get bucket list -> ./s3m.py -get bucket","blue"))
     print(colored("""
- -get bucket           =     Get bucket list from aws account
- -get log              =     Get log from all infra of s3
- -get path             =     Get file paths from all of s3 buckets to test
+ -get bucket             =     Get bucket list from aws account
+ -get log                =     Get log from all infra of s3
+ -get path               =     Get file paths from all of s3 buckets to test
  
- -scan                 =     Find malicious files in s3 buckets using file extensions & names
- -aggresive            =     Find malicious files by using payloads from checklist.txt
- -url [url]            =     Check the contents of file
- -del s3://bucket/path =     To delete provided file from the bucket
+ -scan                   =     Find malicious files in s3 buckets using file extensions & names
+ -aggressive             =     Find malicious files by using payloads from checklist.txt
+ -url [url]              =     Check the contents of file
+ -del s3://bucket/path   =     To delete provided file from the bucket
  
- -check [bucket_name]  =     Check the log of specified s3 bucket""","white"))
+ -check [bucket_name]    =     Check the log of specified s3 bucket
+ --scan-open-bucket (or) =     Scan open buckets from bucket list
+ -sob           ""","white"))
+
+def no_sign():
+    filen = "./buckets.txt"
+    if not os.path.isfile(filen):
+        print(colored("[!] You need to run this -> $ ./s3m.py -get bucket ","red"))
+    else:
+        fileo1 = open(filen).read()
+        fileos = fileo1.splitlines()
+        for i in fileos:
+            print(colored("[->] ","red"),"Result for ",colored("[","blue"),colored(i,"yellow"),colored("]","blue"))
+            os.system(f"aws s3 ls s3://{i}/ --no-sign-request")
+            print(colored("<----------<>----------->","red"))
 
 def help():
     options() 
 
 def delete(b):
-    abc = b.strip()
-    if abc.startswith("s3://"):
-        os.system(f"aws s3 rm \"{abc}\"")
+    if b[0:4]=="s3://":
+        os.system(f"aws s3 rm {b}")
     else:
         help()
         
@@ -62,15 +76,12 @@ def get_s3_bucket_list():
     print(colored("[<-] ","magenta"),"GOT IT ! ....")
     
 def date_out():
-    patho = "./buckets.txt"
-    if not os.pth.isfile(patho):
-        print(colored(f"[!] Run this to retrieve s3 bucket lists from server -> $ ./s3m.py -get bucket","red"))
-    else:
-        file_i = open(patho).read()
-        file_s = file_i.splitlines()
-        for i in file_s:
-            os.system(f"aws s3 ls s3://{i}/ --recursive > ./output/1.with_date/{i} ")
-            print(colored("[<-]","magenta"),colored(f"./output/1.with_date/{i}","blue"))
+    file_i = open("./buckets.txt").read()
+    file_s = file_i.splitlines()
+
+    for i in file_s:
+        os.system(f"aws s3 ls s3://{i}/ --recursive > ./output/1.with_date/{i} ")
+        print(colored("[<-]","magenta"),colored(f"./output/1.with_date/{i}","blue"))
 
 def validation():
     os.system("rm -r ./output/log")
@@ -149,9 +160,6 @@ def contype(x):
     except requests.exceptions.MissingSchema:
         help()
         pass
-    except requests.exceptions.InvalidSchema:
-        help()
-        pass
     else:
         print(colored("-------------------\n","white"),colored("Content-Type       > ","blue"),colored(getfile.headers.get('Content-Type'),"green"))
         print(colored(" Last-Modified-Date > ","magenta"),colored(getfile.headers.get('Last-Modified'),"green"))
@@ -174,44 +182,35 @@ try:
     option = sys.argv[1]
 except IndexError:
     help()
-    sys.exit()
-
-if option in ["-get", "-check", "-url", "-del"]:
+else:
     try:
         argument = sys.argv[2]
+        if option == "-get":
+            if argument == "log":
+                date_out()
+            elif argument == "path":
+                nodate_out()
+            elif argument == "bucket":
+                get_s3_bucket_list()
+            else:
+                help()
+        elif option == "-check":
+            buckets_log(argument)
+        elif option == "-url":
+            contype(argument)
+        elif option == "-del":
+            delete(argument)
+        else:
+            help() 
     except IndexError:
-        print(f"[!] {option} requires an argument!")
-        help()
-        sys.exit()
-
-    if option == "-get":
-        if argument == "log":
-            date_out()
-        elif argument == "path":
-            nodate_out()
-        elif argument == "bucket":
-            get_s3_bucket_list()
+        if option == "-scan":
+            validation()
+        elif option == "-aggressive":
+            aggre()
+        elif option == "--scan-open-bucket" or "-sob":
+            no_sign()
         else:
             help()
-
-    elif option == "-check":
-        buckets_log(argument)
-
-    elif option == "-url":
-        contype(argument)
-
-    elif option == "-del":
-        delete(argument)
-
-elif option == "-scan":
-    validation()
-
-elif option == "-aggressive":
-    aggre()
-
-else:
-    help()
-
 #def mainloop():
 #    print(colored("--------------------","white"))
 #    inp1 = input(colored("</> ","red"))
