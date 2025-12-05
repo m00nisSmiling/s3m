@@ -172,11 +172,15 @@ def aggre():
     fileo2 = open("./checklist.txt").read()
     files2 = fileo2.splitlines()
     for i in files1:
-        p1 = requests.get(i)
-        response = p1.text
-        for q in files2:
-            if q in response:
-                print(colored("[!]","red"),f"{i} ",colored("| Found -> ","blue"),"[",colored(f"{q}","red"),"]")
+        try:
+            p1 = requests.get(i)
+        except IndexError or socket.gaierror or urllib3.exceptions.NameResolutionError or urllib3.exceptions.MaxRetryError or requests.exceptions.ConnectionError:
+            pass
+        else:
+            response = p1.text
+            for q in files2:
+                if q in response:
+                    print(colored("[!]","red"),f"{i} ",colored("| Found -> ","blue"),"[",colored(f"{q}","red"),"]")
 
 try:
     option = sys.argv[1]
@@ -207,7 +211,7 @@ else:
             validation()
         elif option == "-aggressive":
             aggre()
-        elif option == "--scan-open-bucket" or "-sob":
+        elif option == "--scan-open-bucket" or option == "-sob":
             no_sign()
         else:
             help()
