@@ -2,12 +2,12 @@
 
 - Monitor and cover AWS S3 Infra from malicious file upload vulnerabilities 
 
-<br>
+<hr>
 
 ### OS support
 > Linux
 
-<br>
+<hr>
 
 ### Requirements
 - This automation tool used aws cli for monitoring. So, you need to install aws-cli first :
@@ -22,7 +22,7 @@ aws configure
 pip install requests termcolor --break-system-packages
 ```
 
-<br>
+<hr>
 
 ### Installation Steps
 ```
@@ -35,7 +35,7 @@ cd s3m
 chmod +x ./s3m.py
 ```
 
-<br>
+<hr>
 
 ### Usages
 ```
