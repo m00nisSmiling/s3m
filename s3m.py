@@ -8,14 +8,20 @@ import requests
 def options():
     print(colored("\n [!] Before other operations, you need run this command to get bucket list -> ./s3m.py -get bucket","blue"))
     print(colored("""
+ # Logging Phase #
  -get bucket             =     Get bucket list from aws account
  -get log                =     Get log from all infra of s3
  -get path               =     Get file paths from all of s3 buckets to test
  
+ # Scanning Phase #
  -scan                   =     Find malicious files in s3 buckets using file extensions & names
  -aggressive             =     Find malicious files by using payloads from checklist.txt
+ 
+ # Analysis Phase #
  -url [url]              =     Check the contents of file
+ -url multi              =     Check url in multi mode
  -del s3://bucket/path   =     To delete provided file from the bucket
+ -del list               =     To delete in list file mode
  
  -check [bucket_name]    =     Check the log of specified s3 bucket
  --scan-open-bucket (or) =     Scan open buckets from bucket list
@@ -40,7 +46,17 @@ def delete(b):
     if b.startswith("s3://"):
         os.system(f"aws s3 rm {b}")
     else:
-        help()
+        if b == "list":
+            prompt = input("File Path -> ")
+            filea = open(prompt).read()
+            files = filea.splitlines()
+            for f in files:
+                if f.startswith("s3://"):
+                    os.system(f"aws s3 rm {f}")
+                else:
+                    pass
+        else:
+            help()
         
 def nodate_out(): 
     with open("./buckets.txt") as f:
@@ -152,19 +168,41 @@ def validation():
                     seen.add(line)
 
 def contype(x):
-    try:
-        getfile = requests.get(x)
-    except requests.exceptions.ConnectionError:
-        help()
-        pass
-    except requests.exceptions.MissingSchema:
-        help()
-        pass
-    else:
-        print(colored("-------------------\n","white"),colored("Content-Type       > ","blue"),colored(getfile.headers.get('Content-Type'),"green"))
-        print(colored(" Last-Modified-Date > ","magenta"),colored(getfile.headers.get('Last-Modified'),"green"))
-        print(colored("-------------------","white"))
-        print(colored(getfile.text,"white"))
+    if x == "multi":
+        while True:
+            purl = input(colored("URL > ","red"))
+            if purl == "exit":
+                break
+            else:
+                try:
+                    getfile = requests.get(purl)
+                except requests.exceptions.ConnectionError:
+                    help()
+                    pass
+                except requests.exceptions.MissingSchema:
+                    help()
+                    pass
+                else:
+                    print(colored("Content-Type       > ","blue"),colored(getfile.headers.get('Content-Type'),"green"))
+                    print(colored("Last-Modified-Date > ","magenta"),colored(getfile.headers.get('Last-Modified'),"green"))
+                    print(colored("","white"))
+                    print(colored(getfile.text,"white"))
+                    print(colored("---------------------------------------------------------\n","white"))
+    else:      
+        try:
+            getfile = requests.get(x)
+        except requests.exceptions.ConnectionError:
+            help()
+            pass
+        except requests.exceptions.MissingSchema:
+            help()
+            pass
+        else:
+            print(colored("Content-Type       > ","blue"),colored(getfile.headers.get('Content-Type'),"green"))
+            print(colored("Last-Modified-Date > ","magenta"),colored(getfile.headers.get('Last-Modified'),"green"))
+            print(colored("","white"))
+            print(colored(getfile.text,"white"))
+            print(colored("---------------------------------------------------------\n","white"))
 
 def aggre():
     fileo1 = open("./output/log").read()
